@@ -1,0 +1,26 @@
+lockfileVersion: 5.3
+
+importers:
+
+  .:
+    specifiers:
+      typescript: ^4.5.4
+    devDependencies:
+      typescript: 4.5.4
+
+  packages/reactivity:
+    specifiers:
+      shared: workspace:^1.0.0
+    dependencies:
+      shared: link:../shared
+
+  packages/shared:
+    specifiers: {}
+
+packages:
+
+  /typescript/4.5.4:
+    resolution: {integrity: sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==, tarball: typescript/download/typescript-4.5.4.tgz}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true

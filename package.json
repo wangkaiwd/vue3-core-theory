@@ -1,0 +1,23 @@
+{
+  "name": "vue3-core-theory",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangkaiwd/vue3-core-theory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wangkaiwd/vue3-core-theory/issues"
+  },
+  "homepage": "https://github.com/wangkaiwd/vue3-core-theory#readme",
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  }
+}
