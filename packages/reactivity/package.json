@@ -1,15 +1,22 @@
 {
-  "name": "reactivity",
+  "name": "@sppk/reactivity",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "buildOptions": {
+    "name": "reactivity",
+    "formats": [
+      "es",
+      "cjs",
+      "iife"
+    ]
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "shared": "workspace:^1.0.0"
   }
 }
