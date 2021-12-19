@@ -4,7 +4,8 @@
   "private": true,
   "description": "",
   "scripts": {
-    "build": "ts-node -P tsconfig.node.json scripts/build.ts"
+    "build": "ts-node -P tsconfig.node.json scripts/build.ts",
+    "dev": "ts-node -P tsconfig.node.json scripts/build.ts --dev"
   },
   "repository": {
     "type": "git",

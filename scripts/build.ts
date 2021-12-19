@@ -4,6 +4,22 @@ import execa from 'execa';
 
 const rootContext = path.resolve(__dirname, '..');
 const pkgsPath = path.resolve(rootContext, 'packages');
+const argsPrefix = '--';
+const args: string[] = process.argv.slice(2);
+const parseConfig = (args: string[]) => {
+  return args.reduce((memo: Record<string, any>, item, i) => {
+    const next = args[i + 1];
+    if (item.startsWith(argsPrefix)) {
+      const key = item.slice(2);
+      if (!next || next.startsWith(argsPrefix)) {
+        memo[key] = true;
+      } else {
+        memo[key] = next;
+      }
+    }
+    return memo;
+  }, {});
+};
 
 const getPackageDirs = () => {
   return fs.readdirSync(pkgsPath).filter(dir => {
@@ -11,16 +27,16 @@ const getPackageDirs = () => {
     return stats.isDirectory();
   });
 };
-type Build = (target: string) => execa.ExecaChildProcess
-const build: Build = (target) => {
-  return execa('rollup', ['-c', `${rootContext}/rollup.config.ts`, `--environment`, `TARGET:${target}`, `--configPlugin`, `rollup-plugin-typescript2`], { stdio: 'inherit' });
+type Build = (target: string, config?: Record<string, any>) => execa.ExecaChildProcess
+const build: Build = (target, config = {}) => {
+  return execa('rollup', [`-c${config.dev ? 'w' : ''}`, `${rootContext}/rollup.config.ts`, `--environment`, `TARGET:${target}`, `--configPlugin`, `rollup-plugin-typescript2`], { stdio: 'inherit' });
 };
 
-const runParallel = (dirs: string[], build: Build) => {
-  const builds = dirs.map(build);
+const runParallel = (dirs: string[], config: Record<string, any>, build: Build) => {
+  const builds = dirs.map((dir) => build(dir, config));
   return Promise.all(builds);
 };
 
-runParallel(getPackageDirs(), build).then(() => {
+runParallel(getPackageDirs(), parseConfig(args), build).then(() => {
   console.log('build all packages successfully');
 });
