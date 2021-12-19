@@ -5,19 +5,22 @@ const pkgsPath = path.resolve(__dirname, 'packages');
 const target = process.env.TARGET as string;
 
 const input = path.resolve(pkgsPath, target, 'index.ts');
-// @ts-ignore
 const pkgDir = path.resolve(pkgsPath, target);
+const dist = path.resolve(pkgDir, 'dist');
 const { buildOptions } = require(path.resolve(pkgDir, 'package.json'));
 const output = buildOptions.formats.map((format: any) => {
   return {
     format,
-    file: path.resolve(pkgDir, 'dist', `${target}.${format}.js`),
+    file: path.resolve(dist, `${target}.${format}.js`),
     name: buildOptions.name
   };
 });
-
 export default {
   input,
   output,
-  plugins: [typescript()]
+  plugins: [typescript({
+    tsconfig: './tsconfig.json',
+    tsconfigOverride: { declarationDir: dist, declaration: true },
+    useTsconfigDeclarationDir: true
+  })]
 };

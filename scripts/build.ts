@@ -11,16 +11,16 @@ const getPackageDirs = () => {
     return stats.isDirectory();
   });
 };
+type Build = (target: string) => execa.ExecaChildProcess
+const build: Build = (target) => {
+  return execa('rollup', ['-c', `${rootContext}/rollup.config.ts`, `--environment`, `TARGET:${target}`, `--configPlugin`, `rollup-plugin-typescript2`], { stdio: 'inherit' });
+};
 
-function build () {
-  const dirs = getPackageDirs();
-  const builds = dirs.map(dir => {
-    // https://github.com/rollup/rollup/pull/3835
-    return execa('rollup', ['-c', `${rootContext}/rollup.config.ts`, `--environment`, `TARGET:${dir}`,`--configPlugin`,`rollup-plugin-typescript2`]);
-  });
-  return Promise.all(builds).then(() => {
-    console.log('build all packages successfully');
-  });
-}
+const runParallel = (dirs: string[], build: Build) => {
+  const builds = dirs.map(build);
+  return Promise.all(builds);
+};
 
-build()
+runParallel(getPackageDirs(), build).then(() => {
+  console.log('build all packages successfully');
+});
