@@ -11,6 +11,7 @@ const { buildOptions } = require(path.resolve(pkgDir, 'package.json'));
 const output = buildOptions.formats.map((format: any) => {
   return {
     format,
+    sourceMap: true,
     file: path.resolve(dist, `${target}.${format}.js`),
     name: buildOptions.name
   };

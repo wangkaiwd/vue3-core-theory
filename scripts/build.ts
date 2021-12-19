@@ -14,18 +14,29 @@ const parseConfig = (args: string[]) => {
       if (!next || next.startsWith(argsPrefix)) {
         memo[key] = true;
       } else {
-        memo[key] = next;
+        if (next.includes(',')) {
+          memo[key] = next.split(',');
+        } else {
+          memo[key] = next;
+        }
       }
     }
     return memo;
   }, {});
 };
-
-const getPackageDirs = () => {
-  return fs.readdirSync(pkgsPath).filter(dir => {
-    const stats = fs.statSync(path.resolve(pkgsPath, dir));
-    return stats.isDirectory();
-  });
+const config = parseConfig(args);
+console.log('config', config);
+// todo: how to elegant generate develop config ?
+const getPackageDirs = (dirs: string[] | string) => {
+  const formatDirs = Array.isArray(dirs) ? dirs : [dirs];
+  if (formatDirs.length) {
+    return formatDirs.map(dir => path.resolve(pkgsPath, dir));
+  } else {
+    return fs.readdirSync(pkgsPath).filter(dir => {
+      const stats = fs.statSync(path.resolve(pkgsPath, dir));
+      return stats.isDirectory();
+    });
+  }
 };
 type Build = (target: string, config?: Record<string, any>) => execa.ExecaChildProcess
 const build: Build = (target, config = {}) => {
@@ -33,10 +44,11 @@ const build: Build = (target, config = {}) => {
 };
 
 const runParallel = (dirs: string[], config: Record<string, any>, build: Build) => {
+  console.log('config', dirs, config);
   const builds = dirs.map((dir) => build(dir, config));
   return Promise.all(builds);
 };
 
-runParallel(getPackageDirs(), parseConfig(args), build).then(() => {
+runParallel(getPackageDirs(config.pkgs), config, build).then(() => {
   console.log('build all packages successfully');
 });

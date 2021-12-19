@@ -5,12 +5,15 @@ importers:
   .:
     specifiers:
       '@types/node': ^17.0.0
+      '@vue/reactivity': ^3.2.26
       execa: ^5.1.1
       rollup: ^2.61.1
       rollup-plugin-typescript2: ^0.31.1
       ts-node: ^10.4.0
       tslib: ^2.3.1
       typescript: ^4.5.4
+    dependencies:
+      '@vue/reactivity': 3.2.26
     devDependencies:
       '@types/node': 17.0.0
       execa: 5.1.1
@@ -82,6 +85,16 @@ packages:
   /@types/semver/7.3.9:
     resolution: {integrity: sha1-FSxsIKdojDC5Z+wYQdMazlaYY/w=, tarball: '@types/semver/download/@types/semver-7.3.9.tgz'}
     dev: true
+
+  /@vue/reactivity/3.2.26:
+    resolution: {integrity: sha512-h38bxCZLW6oFJVDlCcAiUKFnXI8xP8d+eO0pcDxx+7dQfSPje2AO6M9S9QO6MrxQB7fGP0DH0dYQ8ksf6hrXKQ==, tarball: '@vue/reactivity/download/@vue/reactivity-3.2.26.tgz'}
+    dependencies:
+      '@vue/shared': 3.2.26
+    dev: false
+
+  /@vue/shared/3.2.26:
+    resolution: {integrity: sha512-vPV6Cq+NIWbH5pZu+V+2QHE9y1qfuTq49uNWw4f7FDEeZaDU2H2cx5jcUZOAKW7qTrUS4k6qZPbMy1x4N96nbA==, tarball: '@vue/shared/download/@vue/shared-3.2.26.tgz'}
+    dev: false
 
   /@yarn-tool/resolve-package/1.0.40_@types+node@17.0.0:
     resolution: {integrity: sha512-5kKRhGb8OCdpzuoGkb9BQw6biyY0zYesV3VyvEzRtb/cqZ7AR6o0ajR6q83jTaCJfYUaJaUPyXVOSZAUjWJQDQ==, tarball: '@yarn-tool/resolve-package/download/@yarn-tool/resolve-package-1.0.40.tgz'}
