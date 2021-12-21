@@ -6,12 +6,35 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <script src="node_modules/@vue/reactivity/dist/reactivity.global.js"></script>
+  <script src="../node_modules/@vue/reactivity/dist/reactivity.global.js"></script>
 </head>
 <body>
+<div id="app">
+
+</div>
 <script>
+  // https://v3.vuejs.org/api/basic-reactivity.html#basic-reactivity-apis
   const { reactive, shallowReactive, readonly, shallowReadonly, effect } = VueReactivity;
 
+  const person = { name: 'zz', age: 12, address: { a: 'a', b: 'b' } };
+  // const proxy = reactive(person);
+  // const proxy = shallowReactive(person);
+  // return value of readonly not have reactivity;
+  // const proxy = readonly(person);
+  const proxy = shallowReadonly(person);
+  console.log('proxy', proxy);
+  const app = document.querySelector('#app');
+  // implement of watch,computed based on effect
+  effect(() => {
+    // collect dependence
+    app.innerHTML = `${proxy.name} : ${proxy.address.a}`;
+  });
+
+  setTimeout(() => {
+    // update dependence
+    proxy.name = 'xx';
+    proxy.address.a = 'aa';
+  }, 1000);
 
 </script>
 </body>
