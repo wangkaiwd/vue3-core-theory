@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "build": "ts-node -P tsconfig.node.json scripts/build.ts",
-    "dev": "ts-node -P tsconfig.node.json scripts/build.ts --dev --pkgs"
+    "dev": "ts-node -P tsconfig.node.json scripts/build.ts --dev --pkgs reactivity"
   },
   "repository": {
     "type": "git",

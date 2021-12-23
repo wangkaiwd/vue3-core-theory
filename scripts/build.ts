@@ -25,12 +25,11 @@ const parseConfig = (args: string[]) => {
   }, {});
 };
 const config = parseConfig(args);
-console.log('config', config);
 // todo: how to elegant generate develop config ?
 const getPackageDirs = (dirs: string[] | string) => {
   const formatDirs = Array.isArray(dirs) ? dirs : [dirs];
   if (formatDirs.length) {
-    return formatDirs.map(dir => path.resolve(pkgsPath, dir));
+    return formatDirs;
   } else {
     return fs.readdirSync(pkgsPath).filter(dir => {
       const stats = fs.statSync(path.resolve(pkgsPath, dir));
@@ -44,11 +43,9 @@ const build: Build = (target, config = {}) => {
 };
 
 const runParallel = (dirs: string[], config: Record<string, any>, build: Build) => {
-  console.log('config', dirs, config);
   const builds = dirs.map((dir) => build(dir, config));
   return Promise.all(builds);
 };
 
 runParallel(getPackageDirs(config.pkgs), config, build).then(() => {
-  console.log('build all packages successfully');
 });

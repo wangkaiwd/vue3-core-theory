@@ -19,7 +19,7 @@
   const person = { name: 'zz', age: 12, address: { a: 'a', b: 'b' } };
   // const proxy = reactive(person);
   // const proxy = shallowReactive(person);
-  // return value of readonly not have reactivity;
+  // return value of readonly not have reactivity
   // const proxy = readonly(person);
   const proxy = shallowReadonly(person);
   console.log('proxy', proxy);

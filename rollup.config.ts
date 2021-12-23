@@ -4,8 +4,9 @@ import typescript from 'rollup-plugin-typescript2';
 const pkgsPath = path.resolve(__dirname, 'packages');
 const target = process.env.TARGET as string;
 
-const input = path.resolve(pkgsPath, target, 'index.ts');
+const input = path.resolve(pkgsPath, target, 'src/index.ts');
 const pkgDir = path.resolve(pkgsPath, target);
+console.log('dir', pkgDir, target);
 const dist = path.resolve(pkgDir, 'dist');
 const { buildOptions } = require(path.resolve(pkgDir, 'package.json'));
 const output = buildOptions.formats.map((format: any) => {
