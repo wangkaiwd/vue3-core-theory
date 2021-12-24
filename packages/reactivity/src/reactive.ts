@@ -1,23 +1,25 @@
 import { isObject } from '@sppk/shared';
+import { reactiveHandler } from './base-handler';
 
-export const createReactiveObject = (target) => {
+const reactiveMap = new WeakMap();
+
+// const readonlyMap = new WeakMap();
+
+export const createReactiveObject = (target, baseHandler) => {
   if (!isObject(target)) {
     return target;
   }
-  const handler = {
-    get (target, prop, receiver) {
-      console.log('get', target, prop, receiver);
-      return Reflect.get(target, prop, receiver);
-    },
-    set (target, prop, val, receiver) {
-      return Reflect.set(target, prop, val, receiver);
-    }
-  };
-  return new Proxy(target, handler);
+  // cache all reactive target
+  if (reactiveMap.has(target)) {
+    return reactiveMap.get(target);
+  }
+  const proxy = new Proxy(target, baseHandler);
+  reactiveMap.set(target, proxy);
+  return proxy;
 };
 
 export function reactive (target) {
-  return createReactiveObject(target);
+  return createReactiveObject(target, reactiveHandler);
 }
 
 export function shallowReactive () {

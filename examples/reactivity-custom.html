@@ -10,11 +10,28 @@
 </head>
 <body>
 <script>
-  const { reactive } = reactivity;
-  const person = { name: 'zz', age: 12, deep: { a: 1 } };
+  // goals:
+  //  1. proxy object
+  //  2. collect dependence
+
+  const { reactive, effect } = reactivity;
+  const person = { name: 'zz', age: 12, deep: { a: 1, arr: [1, 2, 3] } };
   const proxy = reactive(person);
-  console.log('a', proxy.deep.a);
-  console.log('proxy', proxy);
+  // console.log('effect', effect);
+  // console.log('proxy', proxy.deep.a);
+  // proxy.deep.arr.push(4);
+  // proxy.b = 'xx';
+  // proxy.deep.arr[0] = 0;
+  // console.log('age', proxy.age);
+  // simulate function call by stack
+  effect(() => {
+    console.log('effect', proxy.name);
+    console.log('effect', proxy.age);
+  });
+  setTimeout(() => {
+    proxy.name = 'xx';
+    // proxy.age = 18;
+  }, 1000);
 </script>
 </body>
 </html>
