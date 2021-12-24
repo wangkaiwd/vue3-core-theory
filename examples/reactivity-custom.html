@@ -11,8 +11,10 @@
 <body>
 <script>
   const { reactive } = reactivity;
-  const person = { name: 'zz', age: 12 };
+  const person = { name: 'zz', age: 12, deep: { a: 1 } };
   const proxy = reactive(person);
+  console.log('a', proxy.deep.a);
+  console.log('proxy', proxy);
 </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ const target = process.env.TARGET as string;
 
 const input = path.resolve(pkgsPath, target, 'src/index.ts');
 const pkgDir = path.resolve(pkgsPath, target);
+// todo: how to debug rollup.config.ts ? why this log not work ?
 console.log('dir', pkgDir, target);
 const dist = path.resolve(pkgDir, 'dist');
 const { buildOptions } = require(path.resolve(pkgDir, 'package.json'));

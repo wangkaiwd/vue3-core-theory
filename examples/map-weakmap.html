@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<script>
+  function Person () {
+
+  }
+
+  let person = new Person();
+  // const map = new Map();
+  // map.set(person, 1);
+  // console.log('map', map);
+  // weak reference to key objects
+  // utilize chrome devtool memorize feature to prove
+  const weakMap = new WeakMap();
+  weakMap.set(person, 2);
+  // console.log('weakMap', weakMap);
+  person = null;
+</script>
+</body>
+</html>
