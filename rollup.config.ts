@@ -13,7 +13,7 @@ const { buildOptions } = require(path.resolve(pkgDir, 'package.json'));
 const output = buildOptions.formats.map((format: any) => {
   return {
     format,
-    sourcemap: true, // todo: why sourcemap file not work ?
+    sourcemap: true,
     file: path.resolve(dist, `${target}.${format}.js`),
     name: buildOptions.name
   };
@@ -23,7 +23,6 @@ export default {
   output,
   plugins: [typescript({
     tsconfig: './tsconfig.json',
-    tsconfigOverride: { declarationDir: dist, declaration: true },
-    useTsconfigDeclarationDir: true
+    tsconfigOverride: { compilerOptions: { declarationDir: dist, declaration: true, sourceMap: true } },
   })]
 };

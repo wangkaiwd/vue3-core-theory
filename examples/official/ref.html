@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../../node_modules/@vue/reactivity/dist/reactivity.global.js"></script>
+</head>
+<body>
+<div id="app">
+
+</div>
+<script>
+  // https://v3.vuejs.org/api/basic-reactivity.html#basic-reactivity-apis
+  const { effect, ref } = VueReactivity;
+
+  const isShow = ref(true);
+  const person = ref({ name: 'xx', age: 12 });
+  console.log('person', person.value);
+  effect(() => {
+    console.log('isShow', isShow.value);
+    console.log('person', person.value.name);
+  });
+  setTimeout(() => {
+    isShow.value = true;
+    person.value.name = 'zz';
+  }, 1000);
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <script src="../packages/reactivity/dist/reactivity.iife.js"></script>
+  <script src="../../packages/reactivity/dist/reactivity.iife.js"></script>
 </head>
 <body>
 <script>
@@ -34,7 +34,7 @@
     // proxy.name = 'xx';
     // proxy.age = 18;
     // need to cooperate with JSON.stringify
-    proxy.deep.arr.length = 1;
+    proxy.deep.arr.push(100);
   }, 1000);
 </script>
 </body>

@@ -1,4 +1,4 @@
-import { isArray } from '@sppk/shared';
+import { isArray, isIntegerKey } from '@sppk/shared';
 
 const effects = [];
 export let activeEffect = null;
@@ -51,7 +51,7 @@ export const track = (type, target, prop) => {
 };
 
 export const trigger = (type, target, prop, value) => {
-  console.log('trigger', targetMap);
+  console.log('trigger', targetMap, type, target, prop, value);
   const depsMap = targetMap.get(target); // WeakMap{ [1,2,3]{ Map:{ 0:[effect],1:[effect],2:[effect] }}}
   if (!depsMap) {
     return;
@@ -75,6 +75,11 @@ export const trigger = (type, target, prop, value) => {
     });
   } else {
     add(effects);
+    // update length: 1. assign new value 2. update length
+    if (isArray(target) && type === 'add' && isIntegerKey(prop)) {
+      // collect effect for new value of array
+      add(depsMap.get('length'));
+    }
   }
   effects.forEach((value) => {
     value();

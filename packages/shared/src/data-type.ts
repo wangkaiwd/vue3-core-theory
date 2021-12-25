@@ -3,4 +3,6 @@ export const isObject = (value) => {
 };
 export const isArray = Array.isArray;
 
-
+export const isIntegerKey = (value) => {
+  return Number(value) + '' === value;
+};
