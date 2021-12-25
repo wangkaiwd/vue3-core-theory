@@ -25,12 +25,16 @@
   // console.log('age', proxy.age);
   // simulate function call by stack
   effect(() => {
-    console.log('effect', proxy.name);
-    console.log('effect', proxy.age);
+    console.log('arr', JSON.stringify(proxy.deep.arr));
+    // console.log('arr', proxy.deep.arr);
+    // console.log('effect', proxy.name);
+    // console.log('effect', proxy.age);
   });
   setTimeout(() => {
-    proxy.name = 'xx';
+    // proxy.name = 'xx';
     // proxy.age = 18;
+    // need to cooperate with JSON.stringify
+    proxy.deep.arr.length = 1;
   }, 1000);
 </script>
 </body>

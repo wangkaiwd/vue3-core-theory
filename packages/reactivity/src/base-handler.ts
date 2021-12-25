@@ -27,16 +27,15 @@ const createSetter = (readonly: boolean, shallow = false) => { // set -> get eff
     console.log('set value', target, prop, val);
     const key = parseInt(prop);
     const oldValue = target[prop];
+    const result = Reflect.set(target, prop, val, receiver);
     let hasKey = isArray(target) && key ? key < target.length : target.hasOwnProperty(prop);
     if (!hasKey) { // add
-      console.log('add');
       trigger('add', target, prop, val);
     } else if (hasChanged(oldValue, val)) { // update length will be filter
       // edit
-      console.log('edit');
       trigger('edit', target, prop, val);
     }
-    return Reflect.set(target, prop, val, receiver);
+    return result;
   };
 };
 

@@ -1,3 +1,5 @@
+import { isArray } from '@sppk/shared';
+
 const effects = [];
 export let activeEffect = null;
 let id = 0;
@@ -50,12 +52,30 @@ export const track = (type, target, prop) => {
 
 export const trigger = (type, target, prop, value) => {
   console.log('trigger', targetMap);
-  const depsMap = targetMap.get(target);
+  const depsMap = targetMap.get(target); // WeakMap{ [1,2,3]{ Map:{ 0:[effect],1:[effect],2:[effect] }}}
   if (!depsMap) {
     return;
   }
   const effects = depsMap.get(prop);
   if (!effects) {return;}
+  const add = (effects) => {
+    effects.forEach((effect) => {
+      if (effect) {
+        effects.add(effect);
+      }
+    });
+  };
+  if (isArray(target) && prop === 'length') { // value is length's value
+    depsMap.forEach((val, key) => {
+      // reduce length will make exceed item to undefined
+      // may be change length property
+      if (key > value || key === 'length') {
+        add(val);
+      }
+    });
+  } else {
+    add(effects);
+  }
   effects.forEach((value) => {
     value();
   });
