@@ -56,7 +56,7 @@ export const trigger = (type, target, prop, value) => {
   if (!depsMap) {
     return;
   }
-  const effects = depsMap.get(prop);
+  let effects = depsMap.get(prop);
   if (!effects) {return;}
   const add = (effects) => {
     effects.forEach((effect) => {
@@ -78,7 +78,8 @@ export const trigger = (type, target, prop, value) => {
     // update length: 1. assign new value 2. update length
     if (isArray(target) && type === 'add' && isIntegerKey(prop)) {
       // collect effect for new value of array
-      add(depsMap.get('length'));
+      effects = depsMap.get('length');
+      add(effects);
     }
   }
   effects.forEach((value) => {

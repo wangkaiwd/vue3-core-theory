@@ -41,3 +41,5 @@ import { isString, NOOP, extend, generateCodeFrame } from '@vue/shared';
 ```
 
 * [webpack resolve alias](https://webpack.js.org/configuration/resolve/#resolvealias)
+
+### How to create a high quality project

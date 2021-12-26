@@ -16,7 +16,7 @@
 
   const { reactive, effect } = reactivity;
   const person = { name: 'zz', age: 12, deep: { a: 1, arr: [1, 2, 3] } };
-  const proxy = reactive(person);
+  // const proxy = reactive(person);
   // console.log('effect', effect);
   // console.log('proxy', proxy.deep.a);
   // proxy.deep.arr.push(4);
@@ -24,18 +24,46 @@
   // proxy.deep.arr[0] = 0;
   // console.log('age', proxy.age);
   // simulate function call by stack
-  effect(() => {
-    console.log('arr', JSON.stringify(proxy.deep.arr));
-    // console.log('arr', proxy.deep.arr);
-    // console.log('effect', proxy.name);
-    // console.log('effect', proxy.age);
-  });
-  setTimeout(() => {
-    // proxy.name = 'xx';
-    // proxy.age = 18;
-    // need to cooperate with JSON.stringify
-    proxy.deep.arr.push(100);
-  }, 1000);
+  // effect(() => {
+  //   console.log('arr', JSON.stringify(proxy.deep.arr));
+  // console.log('arr', proxy.deep.arr);
+  // console.log('effect', proxy.name);
+  // console.log('effect', proxy.age);
+  // });
+  // setTimeout(() => {
+  // proxy.name = 'xx';
+  // proxy.age = 18;
+  // need to cooperate with JSON.stringify
+  //   proxy.deep.arr.push(100);
+  // }, 1000);
+
+  function objectAddNewValue () {
+    const person = { name: 'zz', age: 12, deep: { a: 1, arr: [1, 2, 3] } };
+    const proxy = reactive(person);
+    effect(() => {
+      console.log(proxy.name);
+    });
+    setTimeout(() => {
+      proxy.new = 100;
+    }, 1000);
+  }
+
+  function arrayAddNewValue () {
+    const person = [1,2,3];
+    const proxy = reactive(person);
+    effect(() => {
+      console.log('arr', JSON.stringify(proxy));
+    });
+    setTimeout(() => {
+      debugger
+      proxy.push(100);
+    }, 1000);
+  }
+
+  // not work
+  // objectAddNewValue();
+
+  arrayAddNewValue();
 </script>
 </body>
 </html>
