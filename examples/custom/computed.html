@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../../packages/reactivity/dist/reactivity.iife.js"></script>
+</head>
+<body>
+<script>
+  const { computed, reactive, effect } = reactivity;
+  const person = { name: 'zz', age: 12 };
+  const proxy = reactive(person);
+  // computed also is a effect
+  const newAge = computed(() => {
+    console.log('newAge');
+    return proxy.age * 2;
+  });
+  effect(() => {
+    console.log('hh', newAge.value);
+  });
+  // console.log(newAge.value);
+  proxy.age = 100;
+</script>
+</body>
+</html>

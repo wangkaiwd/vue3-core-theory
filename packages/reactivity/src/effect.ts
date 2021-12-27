@@ -83,7 +83,12 @@ export const trigger = (type, target, prop, value) => {
     }
   }
   effects.forEach((value) => {
-    value();
+    const { scheduler } = value.options;
+    if (scheduler) {
+      scheduler(value);
+    } else {
+      value();
+    }
   });
 };
 
