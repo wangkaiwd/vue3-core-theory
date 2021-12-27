@@ -8,11 +8,11 @@
   <title>Document</title>
 </head>
 <body>
-<script src="../../packages/reactivity/dist/reactivity.iife.js"></script>
+<script src="../../node_modules/@vue/reactivity/dist/reactivity.global.js"></script>
 <script>
   // https://v3.vuejs.org/api/refs-api.html#toref
   // https://v3.vuejs.org/api/refs-api.html#torefs
-  const { toRef, effect, reactive, toRefs } = reactivity;
+  const { toRef, effect, reactive, toRefs } = VueReactivity;
 
   function toRefDemo () {
     const proxy = reactive({ name: 'zz' });
@@ -28,12 +28,15 @@
   function toRefsDemo () {
     const obj = { name: 'zz', age: 12 };
     const proxy = reactive(obj);
-    const { age } = toRefs(proxy);
+    const plain = toRefs(proxy);
+    console.log('plain', plain);
+    console.log('proxy', proxy);
+    console.log('obj', obj);
     effect(() => {
-      console.log(age.value);
+      console.log(proxy.age);
     });
     setTimeout(() => {
-      age.value = 12;
+      proxy.age = 18;
     }, 1000);
   }
 
