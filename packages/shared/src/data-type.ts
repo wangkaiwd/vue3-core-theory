@@ -8,3 +8,5 @@ export const isIntegerKey = (value) => {
 };
 
 export const isString = (value) => typeof value === 'string';
+
+export const isFunction = (value) => typeof value === 'function';

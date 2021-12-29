@@ -47,14 +47,14 @@ const patchListener = (element, key, next) => {
     }
   }
 };
-export const patchProp = (element, key, pre, next) => {
+export const patchProp = (el, key, pre, next) => {
   if (key === 'class') {
-    patchClass(element, next);
+    patchClass(el, next);
   } else if (key === 'style') {
-    patchStyle(element, pre, next);
+    patchStyle(el, pre, next);
   } else if (/^on[A-Z]/.test(key)) { // listeners: such as onClick
-    patchListener(element, pre, next);
+    patchListener(el, pre, next);
   } else {
-    element.setAttribute(key, next);
+    el.setAttribute(key, next);
   }
 };

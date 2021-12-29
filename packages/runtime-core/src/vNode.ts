@@ -31,3 +31,6 @@ export const createVNode = (type, props, children = null) => {
   normalizeChildren(vNode, children);
   return vNode;
 };
+export const isVNode = (value) => {
+  return value.__v_isVNode;
+};

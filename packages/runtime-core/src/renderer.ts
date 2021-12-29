@@ -1,54 +1,26 @@
 import { createAppAPI } from './apiCreateApp';
-import { ShapeFlags } from '@sppk/shared';
+import { hasOwn, isString, ShapeFlags } from '@sppk/shared';
+import { createComponentInstance, setupComponent } from './component';
+import { effect } from '@sppk/reactivity';
 
-let uid = 0;
-const createComponentInstance = (vNode) => {
-  const instance = {
-    uid: uid++,
-    vNode,
-    type: vNode.type,
-    props: {},
-    slots: {},
-    attrs: {},
-    emit: null,
-    ctx: {},
-    proxy: null,
-    setupState: {}, // setup return value
-    isMounted: false,
-    subTree: {},
-    render: null
-  };
-  instance.ctx = { _: instance };
-  return instance;
-};
-const createSetupContext = (instance) => {
-  return {
-    emit: instance.emit,
-    attrs: instance.attrs,
-    slots: instance.slots,
-    expose: () => {}
-  };
-};
-const setupStatefulComponent = (instance) => {
-  const { setup } = instance.type;
-  const { props } = instance;
-  if (setup) {
-    const setupContext = createSetupContext(instance);
-    const result = setup(props, setupContext);
-  }
-};
-const setupComponent = (instance) => {
-  const { props, children } = instance.vNode;
-  // initProps
-  // initSlots
-  instance.props = props;
-  instance.slots = children;
-  setupStatefulComponent(instance);
-};
 export const createRenderer = (renderOptions) => {
+  function setupRenderEffect (instance, container) {
+    effect(function componentEffect () {
+      if (!instance.isMounted) { // render
+        const subTree = instance.subTree = instance.render.call(instance.proxy, instance.proxy);
+        patch(null, subTree, container);
+        instance.isMounted = true;
+      } else { // update
+
+      }
+    });
+  }
+
   function mountComponent (n2, container) {
     const instance = n2.component = createComponentInstance(n2);
     setupComponent(instance);
+    // invoke render method( reactive )
+    setupRenderEffect(instance, container);
   }
 
   function updateComponent (n1, n2, container) {
@@ -62,10 +34,35 @@ export const createRenderer = (renderOptions) => {
       updateComponent(n1, n2, container);
     }
   };
+  const mountElement = (vNode, container) => {
+    const { type, props, children } = vNode;
+    const el = vNode.el = renderOptions.createElement(vNode.type);
+    for (const key in props) {
+      if (hasOwn(props, key)) {
+        renderOptions.patchProp(el, key, null, props[key]);
+      }
+    }
+    if (Array.isArray(children)) {
+      children.forEach(child => {
+        mountElement(child, el);
+      });
+    } else { // text
+      renderOptions.setElementText(el, children);
+    }
+    container.appendChild(vNode.el);
+    return vNode.el;
+  };
+
+  function processElement (n1, n2, container) {
+    if (!n1) {
+      mountElement(n2, container);
+    }
+  }
+
   const patch = (n1, n2, container) => {
     const { shapeFlag } = n2;
     if (shapeFlag & ShapeFlags.ELEMENT) { // element
-
+      processElement(n1, n2, container);
     } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) { // component
       processComponent(n1, n2, container);
     }

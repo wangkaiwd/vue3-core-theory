@@ -5,7 +5,7 @@
 1. create `pnpm-workspace.yaml` and add follow configuration
 
 ```yaml
-prefer-workspace-packa: true
+prefer-workspace-packages: true
 packages:
   - 'packages/**'       
 ```

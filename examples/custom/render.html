@@ -13,13 +13,25 @@
 
 </div>
 <script>
-  const { createApp } = RuntimeDOM;
+  const { createApp, h } = RuntimeDOM;
   const App = {
     setup () {
-      console.log('setup', arguments);
-      return () => {
-        console.log('render');
+      return {
+        a: 1
       };
+    },
+    render () {
+      console.log(
+        'virtual node',
+        h(
+          'div', { backgroundColor: 'red' },
+          h('p', { color: 'red' }, 'hello world')
+        )
+      );
+      return h(
+        'div', { style: { backgroundColor: 'red' } },
+        h('p', { style: { color: 'yellow' } }, 'hello world')
+      );
     }
   };
 

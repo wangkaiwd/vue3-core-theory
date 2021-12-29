@@ -27,9 +27,14 @@
   const App = {
     setup () {
       const { count, add } = useCounter();
-      return () => {
-        return h('h1', { onClick: add }, count.value);
-      };
+      // return () => {
+      //   return h('h1', { onClick: add }, count.value);
+      // };
+      return { a: 1 };
+    },
+    render () {
+      console.log('this', this);
+      return h('h1', this.a);
     }
   };
 

@@ -1,7 +1,7 @@
 // https://stackoverflow.com/a/9979779/12819402
 export const nodeOpts = {
   // create
-  create (tag) {
+  createElement (tag) {
     return document.createElement(tag);
   },
   // delete
@@ -20,10 +20,10 @@ export const nodeOpts = {
   createTextNode (text) {
     return document.createTextNode(text);
   },
-  setText (textNode, newText) {
-    return textNode.textContent = newText;
+  setElementText (element, newText) {
+    return element.textContent = newText;
   },
-  getParent (element) {
+  parentNode (element) {
     return element.parentNode;
   },
   nextSibling (element) {

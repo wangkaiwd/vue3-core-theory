@@ -3,6 +3,8 @@ import { patchProp } from './patchProp';
 import { extend } from '@sppk/shared';
 import { createRenderer } from '@sppk/runtime-core';
 
+export * from '@sppk/runtime-core';
+
 const rendererOptions = extend(nodeOpts, { patchProp });
 
 export const createApp = (rootComponent, rootProps) => {
@@ -17,3 +19,4 @@ export const createApp = (rootComponent, rootProps) => {
   };
   return app;
 };
+
