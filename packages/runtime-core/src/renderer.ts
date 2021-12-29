@@ -60,8 +60,23 @@ export const createRenderer = (renderOptions) => {
     container.appendChild(vNode.el);
     return vNode.el;
   };
+  const patchProps = (el, prev, next) => {
+    for (const key in prev) {
+      if (hasOwn(prev, key)) {
+        if (!(key in next)) { // style, class, listener need to handle separately
+          renderOptions.patchProp(el, key, prev[key], null);
+        }
+      }
+    }
+    for (const key in next) {
+      if (hasOwn(next, key)) {
+        renderOptions.patchProp(el, key, prev[key], next[key]);
+      }
+    }
+  };
   const patchElement = (n1, n2, container) => {
-
+    const el = n2.el = n1.el;
+    patchProps(container, n1.props, n2.props);
   };
 
   function processElement (n1, n2, container) {
