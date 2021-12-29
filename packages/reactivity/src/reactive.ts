@@ -1,5 +1,5 @@
 import { isObject } from '@sppk/shared';
-import { reactiveHandler } from './base-handler';
+import { reactiveHandler } from './baseHandler';
 
 const reactiveMap = new WeakMap();
 

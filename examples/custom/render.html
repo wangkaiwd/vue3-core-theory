@@ -15,12 +15,12 @@
 <script>
   const { createApp } = RuntimeDOM;
   const App = {
-    // setup () {
-    //   const { count, add } = useCounter();
-    //   return () => {
-    //     return h('h1', { onClick: add }, count.value);
-    //   };
-    // }
+    setup () {
+      console.log('setup', arguments);
+      return () => {
+        console.log('render');
+      };
+    }
   };
 
   createApp(App, { name: 'xx', age: 12 }).mount('#app');

@@ -6,3 +6,5 @@ export const isArray = Array.isArray;
 export const isIntegerKey = (value) => {
   return Number(value) + '' === value;
 };
+
+export const isString = (value) => typeof value === 'string';

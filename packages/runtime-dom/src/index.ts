@@ -1,4 +1,4 @@
-import { nodeOpts } from './node-opts';
+import { nodeOpts } from './nodeOpts';
 import { patchProp } from './patchProp';
 import { extend } from '@sppk/shared';
 import { createRenderer } from '@sppk/runtime-core';

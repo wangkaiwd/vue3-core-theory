@@ -1,15 +1,5 @@
-const createVNode = (type, props, children = null) => {
-  const { key } = props;
-  const vNode = {
-    el: null, // real node
-    type,
-    props,
-    children,
-    key,
-    __v_isVNode: true
-  };
-  return vNode;
-};
+import { createVNode } from './vNode';
+
 export const createAppAPI = (render) => {
   return (rootComponent, rootProps) => {
     const app = {
@@ -20,6 +10,8 @@ export const createAppAPI = (render) => {
         console.log(rootComponent, rootProps, container);
         app._container = container;
         const vNode = createVNode(rootComponent, rootProps);
+        // convert virtual node to real node
+        render(vNode, container);
       }
     };
     return app;
