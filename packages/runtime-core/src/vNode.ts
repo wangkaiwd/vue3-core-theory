@@ -34,3 +34,7 @@ export const createVNode = (type, props, children = null) => {
 export const isVNode = (value) => {
   return value.__v_isVNode;
 };
+
+export const isSameVNode = (n1, n2) => {
+  return n1.type === n2.type && n1.key === n2.key;
+};

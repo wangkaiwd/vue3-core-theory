@@ -53,7 +53,7 @@ export const patchProp = (el, key, pre, next) => {
   } else if (key === 'style') {
     patchStyle(el, pre, next);
   } else if (/^on[A-Z]/.test(key)) { // listeners: such as onClick
-    patchListener(el, pre, next);
+    patchListener(el, key, next);
   } else {
     el.setAttribute(key, next);
   }

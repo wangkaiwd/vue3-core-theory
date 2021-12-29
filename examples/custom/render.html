@@ -13,25 +13,34 @@
 
 </div>
 <script>
-  const { createApp, h } = RuntimeDOM;
+  const { createApp, h, reactive, toRefs, ref } = RuntimeDOM;
   const App = {
     setup () {
+      const state = reactive({ name: 'zz', age: 12 });
+      const reverse = ref(false);
+      const addAge = () => {
+        console.log('click');
+        state.age++;
+      };
+      setTimeout(() => {
+        reverse.value = true;
+      }, 1000);
       return {
-        a: 1
+        ...toRefs(state),
+        addAge,
+        reverse
       };
     },
-    render () {
-      console.log(
-        'virtual node',
-        h(
-          'div', { backgroundColor: 'red' },
-          h('p', { color: 'red' }, 'hello world')
-        )
-      );
-      return h(
-        'div', { style: { backgroundColor: 'red' } },
-        h('p', { style: { color: 'yellow' } }, 'hello world')
-      );
+    render ({ name, age, addAge, reverse }) {
+      if (reverse.value) {
+        return h('div', {}, 'world hello');
+      } else {
+        return h('p', {}, 'hello world');
+      }
+      // return h(
+      //   'div', { style: { backgroundColor: 'red' } },
+      //   h('p', { style: { color: 'yellow' }, onClick: addAge }, `name:${name.value}，age:${age.value}`)
+      // );
     }
   };
 
