@@ -14,6 +14,86 @@
 </div>
 <script>
   const { createApp, h, reactive, toRefs, ref } = RuntimeDOM;
+  const demo1 = () => {
+    const oldVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+    ]);
+    const newVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+      h('li', { key: 'D' }, 'D'),
+    ]);
+    return {
+      oldVNode,
+      newVNode
+    };
+  };
+  const demo2 = () => {
+    const oldVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+    ]);
+    const newVNode = h('div', [
+      h('li', { key: 'D' }, 'D'),
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+    ]);
+    return {
+      oldVNode,
+      newVNode
+    };
+  };
+  const demo3 = () => {
+    const oldVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'E' }, 'E'),
+      h('li', { key: 'C' }, 'C'),
+      h('li', { key: 'D' }, 'D'),
+
+    ]);
+    const newVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+      h('li', { key: 'D' }, 'D'),
+    ]);
+    return {
+      oldVNode,
+      newVNode
+    };
+  };
+  const demo4 = () => {
+    const oldVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'C' }, 'C'),
+      h('li', { key: 'D' }, 'D'),
+      h('li', { key: 'E' }, 'E'),
+      h('li', { key: 'Q' }, 'Q'),
+      h('li', { key: 'F' }, 'F'),
+      h('li', { key: 'G' }, 'G'),
+    ]);
+    const newVNode = h('div', [
+      h('li', { key: 'A' }, 'A'),
+      h('li', { key: 'B' }, 'B'),
+      h('li', { key: 'E' }, 'E'),
+      h('li', { key: 'C' }, 'C'),
+      h('li', { key: 'D' }, 'D'),
+      h('li', { key: 'H' }, 'H'),
+      h('li', { key: 'F' }, 'F'),
+      h('li', { key: 'G' }, 'G'),
+    ]);
+    return {
+      oldVNode,
+      newVNode
+    };
+  };
   const App = {
     setup () {
       const state = reactive({ name: 'zz', age: 12 });
@@ -32,26 +112,12 @@
       };
     },
     render ({ name, age, addAge, flag }) {
+      const { newVNode, oldVNode } = demo4();
       if (flag.value) {
-        return h('div', [
-          h('li', { key: 'A' }, 'A'),
-          h('li', { key: 'B' }, 'B'),
-          h('li', { key: 'C' }, 'C'),
-          h('li', { key: 'D' }, 'D'),
-        ]);
+        return oldVNode;
       } else {
-        return h('div', [
-          h('li', { key: 'A' }, 'A'),
-          h('li', { key: 'B' }, 'B'),
-          h('li', { key: 'E' }, 'E'),
-          h('li', { key: 'C' }, 'C'),
-          h('li', { key: 'D' }, 'D'),
-        ]);
+        return newVNode;
       }
-      // return h(
-      //   'div', { style: { backgroundColor: 'red' } },
-      //   h('p', { style: { color: 'yellow' }, onClick: addAge }, `name:${name.value}，age:${age.value}`)
-      // );
     }
   };
 

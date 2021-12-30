@@ -75,6 +75,9 @@ export const createRenderer = (renderOptions) => {
     let i = 0;
     let endIndex1 = c1.length - 1;
     let endIndex2 = c2.length - 1;
+    const mapMap = () => {
+
+    };
     // 1. sync from start
     while (i <= endIndex1 && i <= endIndex2) {
       const n1 = c1[i], n2 = c2[i];
@@ -96,7 +99,6 @@ export const createRenderer = (renderOptions) => {
       endIndex1--;
       endIndex2--;
     }
-    console.log('index', i, endIndex1, endIndex2, c2);
     if (i > endIndex1) { // prepend/append
       if (i <= endIndex2) {
         const nextPos = endIndex2 + 1;
@@ -104,6 +106,47 @@ export const createRenderer = (renderOptions) => {
         while (i <= endIndex2) {
           // move element
           patch(null, c2[i++], el, reference);
+        }
+      }
+    } else if (i > endIndex2) { // old vNode lager
+      while (i <= endIndex1) { // delete old vNode redundant node
+        unmount(c1[i++]);
+      }
+    } else {
+      // random order
+      let s1 = i;
+      let s2 = i;
+      const keyToNewIndexMap = new Map();
+      for (let j = s2; j <= endIndex2; j++) {
+        const { key } = c2[j].props;
+        keyToNewIndexMap.set(key, j);
+      }
+      // length ?
+      const toBePatched = endIndex2 - s2 + 1;
+      const newIndexToOldIndexMap = new Array(toBePatched).fill(0);
+      for (let j = s1; j <= endIndex1; j++) {
+        const child = c1[j];
+        const { key } = child.props;
+        const newIndex = keyToNewIndexMap.get(key);
+        if (newIndex === undefined) { // delete
+          unmount(child);
+        } else { // reuse
+          newIndexToOldIndexMap[newIndex - s2] = i + 1; // avoid occur zero, so there index + 1
+          patch(child, c2[newIndex], el);
+        }
+      }
+      // move node and insert new node
+      // find not patched vnode then inert it to parent
+      for (let i = toBePatched - 1; i >= 0; i--) {
+        const oldIndex = newIndexToOldIndexMap[i];
+        const newIndex = i + s2;
+        const nextIndex = newIndex + 1;
+        const reference = nextIndex < c2.length ? c2[nextIndex].el : null;
+        if (oldIndex === 0) { // new node
+          patch(null, c2[newIndex], el, reference);
+        } else { // move
+          // previous add 1
+          renderOptions.insert(el, c2[newIndex].el, reference);
         }
       }
     }
@@ -135,6 +178,9 @@ export const createRenderer = (renderOptions) => {
     //    1. old or new children is text node
     //    2. array compare with array
   };
+  const unmount = (vNode) => {
+    renderOptions.remove(vNode.el);
+  };
 
   function processElement (n1, n2, container, reference) {
     if (!n1) {
@@ -150,7 +196,7 @@ export const createRenderer = (renderOptions) => {
       return;
     }
     if (n1 && !isSameVNode(n1, n2)) {
-      renderOptions.remove(n1.el);
+      unmount(n1);
       n1 = null;
       // n1 is null, below code will mount n2 to real dom
     }
