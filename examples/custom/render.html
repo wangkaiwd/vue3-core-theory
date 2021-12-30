@@ -17,25 +17,36 @@
   const App = {
     setup () {
       const state = reactive({ name: 'zz', age: 12 });
-      const reverse = ref(false);
+      const flag = ref(true);
       const addAge = () => {
         console.log('click');
         state.age++;
       };
       setTimeout(() => {
-        reverse.value = true;
+        flag.value = false;
       }, 1000);
       return {
         ...toRefs(state),
         addAge,
-        reverse
+        flag
       };
     },
-    render ({ name, age, addAge, reverse }) {
-      if (reverse.value) {
-        return h('div', { style: { backgroundColor: 'red' } }, 'world hello');
+    render ({ name, age, addAge, flag }) {
+      if (flag.value) {
+        return h('div', [
+          h('li', { key: 'A' }, 'A'),
+          h('li', { key: 'B' }, 'B'),
+          h('li', { key: 'C' }, 'C'),
+          h('li', { key: 'D' }, 'D'),
+        ]);
       } else {
-        return h('div', { style: { backgroundColor: 'yellow' } }, 'hello world');
+        return h('div', [
+          h('li', { key: 'A' }, 'A'),
+          h('li', { key: 'B' }, 'B'),
+          h('li', { key: 'E' }, 'E'),
+          h('li', { key: 'C' }, 'C'),
+          h('li', { key: 'D' }, 'D'),
+        ]);
       }
       // return h(
       //   'div', { style: { backgroundColor: 'red' } },

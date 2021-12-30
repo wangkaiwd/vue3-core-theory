@@ -12,7 +12,6 @@ export const createRenderer = (renderOptions) => {
         patch(null, subTree, container);
         instance.isMounted = true;
       } else { // update
-        console.log('edit');
         const prevTree = instance.subTree;
         const nextTree = instance.subTree = instance.render.call(instance.proxy, instance.proxy);
         patch(prevTree, nextTree, container);
@@ -44,9 +43,9 @@ export const createRenderer = (renderOptions) => {
       patch(null, child, container);
     });
   };
-  const mountElement = (vNode, container) => {
+  const mountElement = (vNode, container, reference) => {
     const { type, props, children, shapeFlag } = vNode;
-    const el = vNode.el = renderOptions.createElement(vNode.type);
+    const el = vNode.el = renderOptions.createElement(type);
     for (const key in props) {
       if (hasOwn(props, key)) {
         renderOptions.patchProp(el, key, null, props[key]);
@@ -57,7 +56,7 @@ export const createRenderer = (renderOptions) => {
     } else if (shapeFlag & ShapeFlags.TEXT_CHILDREN) { // text
       renderOptions.setElementText(el, children);
     }
-    container.appendChild(vNode.el);
+    renderOptions.insert(container, vNode.el, reference);
     return vNode.el;
   };
   const patchProps = (el, prev, next) => {
@@ -72,14 +71,62 @@ export const createRenderer = (renderOptions) => {
       }
     }
   };
+  const patchKeyedChildren = (el, c1, c2) => {
+    let i = 0;
+    let endIndex1 = c1.length - 1;
+    let endIndex2 = c2.length - 1;
+    // 1. sync from start
+    while (i <= endIndex1 && i <= endIndex2) {
+      const n1 = c1[i], n2 = c2[i];
+      if (isSameVNode(n1, n2)) { // run into different node, stop loop
+        patch(n1, n2, el);
+      } else {
+        break;
+      }
+      i++;
+    }
+    // 2. sync from end
+    while (i <= endIndex1 && i <= endIndex2) {
+      const n1 = c1[endIndex1], n2 = c2[endIndex2];
+      if (isSameVNode(n1, n2)) {
+        patch(n1, n2, el);
+      } else {
+        break;
+      }
+      endIndex1--;
+      endIndex2--;
+    }
+    console.log('index', i, endIndex1, endIndex2, c2);
+    if (i > endIndex1) { // prepend/append
+      if (i <= endIndex2) {
+        const nextPos = endIndex2 + 1;
+        const reference = nextPos < c2.length ? c2[nextPos].el : null;
+        while (i <= endIndex2) {
+          // move element
+          patch(null, c2[i++], el, reference);
+        }
+      }
+    }
+  };
   const patchChildren = (el, n1, n2) => {
     const c1 = n1.children;
     const c2 = n2.children;
-    if (n2.shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+    if (!c1 || !c2) { // no c1 and c2
+      renderOptions.setElementText(el, '');
+    } else if (n2.shapeFlag & ShapeFlags.TEXT_CHILDREN) { // c2 is text
       renderOptions.setElementText(el, c2);
+    } else if (n1.shapeFlag & ShapeFlags.TEXT_CHILDREN) { // c1 is text
+      // clear previous content
+      renderOptions.setElementText(el, '');
+      // recursive mount all children
+      mountChildren(el, c2);
+    } else { //array
+      patchKeyedChildren(el, c1, c2);
     }
   };
   const patchElement = (n1, n2, container) => {
+    // assign old vNode el to new vNode el, because them is same vNode in current level
+    // after will update el's children
     const el = n2.el = n1.el;
     patchProps(el, n1.props, n2.props);
     patchChildren(el, n1, n2);
@@ -89,16 +136,16 @@ export const createRenderer = (renderOptions) => {
     //    2. array compare with array
   };
 
-  function processElement (n1, n2, container) {
+  function processElement (n1, n2, container, reference) {
     if (!n1) {
-      mountElement(n2, container);
+      mountElement(n2, container, reference);
     } else {
       patchElement(n1, n2, container);
     }
   }
 
   // core function
-  const patch = (n1, n2, container) => {
+  const patch = (n1, n2, container, reference = null) => {
     if (n1 === n2) {
       return;
     }
@@ -109,7 +156,7 @@ export const createRenderer = (renderOptions) => {
     }
     const { shapeFlag } = n2;
     if (shapeFlag & ShapeFlags.ELEMENT) { // element
-      processElement(n1, n2, container);
+      processElement(n1, n2, container, reference);
     } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) { // component
       processComponent(n1, n2, container);
     }
