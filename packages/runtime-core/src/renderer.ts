@@ -62,10 +62,8 @@ export const createRenderer = (renderOptions) => {
   };
   const patchProps = (el, prev, next) => {
     for (const key in prev) {
-      if (hasOwn(prev, key)) {
-        if (!(key in next)) { // style, class, listener need to handle separately
-          renderOptions.patchProp(el, key, prev[key], null);
-        }
+      if (hasOwn(prev, key) && !(key in next)) { // style, class, listener need to handle separately
+        renderOptions.patchProp(el, key, prev[key], null);
       }
     }
     for (const key in next) {
@@ -74,9 +72,21 @@ export const createRenderer = (renderOptions) => {
       }
     }
   };
+  const patchChildren = (el, n1, n2) => {
+    const c1 = n1.children;
+    const c2 = n2.children;
+    if (n2.shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      renderOptions.setElementText(el, c2);
+    }
+  };
   const patchElement = (n1, n2, container) => {
     const el = n2.el = n1.el;
-    patchProps(container, n1.props, n2.props);
+    patchProps(el, n1.props, n2.props);
+    patchChildren(el, n1, n2);
+    // 1. either not children
+    // 2. both has children
+    //    1. old or new children is text node
+    //    2. array compare with array
   };
 
   function processElement (n1, n2, container) {
@@ -87,7 +97,11 @@ export const createRenderer = (renderOptions) => {
     }
   }
 
+  // core function
   const patch = (n1, n2, container) => {
+    if (n1 === n2) {
+      return;
+    }
     if (n1 && !isSameVNode(n1, n2)) {
       renderOptions.remove(n1.el);
       n1 = null;

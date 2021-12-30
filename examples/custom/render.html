@@ -33,9 +33,9 @@
     },
     render ({ name, age, addAge, reverse }) {
       if (reverse.value) {
-        return h('div', {}, 'world hello');
+        return h('div', { style: { backgroundColor: 'red' } }, 'world hello');
       } else {
-        return h('p', {}, 'hello world');
+        return h('div', { style: { backgroundColor: 'yellow' } }, 'hello world');
       }
       // return h(
       //   'div', { style: { backgroundColor: 'red' } },
