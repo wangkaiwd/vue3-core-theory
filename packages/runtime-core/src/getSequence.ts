@@ -1,11 +1,11 @@
 // Longest increasing subsequence
 // const arr = [1, 8, 5, 3, 4, 9, 7, 6];
-const arr = [2, 3, 1, 5, 6, 8, 7, 9, 4];
+// const arr = [2, 3, 1, 5, 6, 8, 7, 9, 4];
 // 2,3,5,6,7,9
 // current:
 //        1,3,4,6,7,9
 // index: 2,1,8,4,6,7
-const getSequence = (arr) => {
+export const getSequence = (arr) => {
   const subIndices = [0];
   const preIndices = [...arr];
   for (let i = 0; i < arr.length; i++) {
@@ -50,6 +50,3 @@ const getSequence = (arr) => {
   }
   return subIndices;
 };
-// 1,3,4,6
-// 0,3,4,7
-console.log(getSequence(arr));

@@ -3,6 +3,7 @@ import { hasOwn, isString, ShapeFlags } from '@sppk/shared';
 import { createComponentInstance, setupComponent } from './component';
 import { effect } from '@sppk/reactivity';
 import { isSameVNode } from './vNode';
+import { getSequence } from './getSequence';
 
 export const createRenderer = (renderOptions) => {
   function setupRenderEffect (instance, container) {
@@ -118,32 +119,42 @@ export const createRenderer = (renderOptions) => {
         const { key } = c2[j].props;
         keyToNewIndexMap.set(key, j);
       }
-      // length ?
       const toBePatched = endIndex2 - s2 + 1;
       const newIndexToOldIndexMap = new Array(toBePatched).fill(0);
       for (let j = s1; j <= endIndex1; j++) {
         const child = c1[j];
         const { key } = child.props;
         const newIndex = keyToNewIndexMap.get(key);
-        if (newIndex === undefined) { // delete
+        if (newIndex === undefined) { // delete vNode which not exist in new vNode children
           unmount(child);
         } else { // reuse
-          newIndexToOldIndexMap[newIndex - s2] = i + 1; // avoid occur zero, so there index + 1
+          // record which vNode can reuse, if value is 0 which imply this is new vNode
+          newIndexToOldIndexMap[newIndex - s2] = j + 1; // avoid occur zero, so there index + 1
           patch(child, c2[newIndex], el);
         }
       }
       // move node and insert new node
       // find not patched vNode then inert it to parent
+      // 为了减少移动次数，要在新的孩子节点中查找其在老的孩子节点中的最长连续部分 的索引，这些索引对应的元素在新节点中将不用再移动
+      // [5,3,4,0] -> [1,2]
+      const increasingNewIndexSequence = getSequence(newIndexToOldIndexMap);
+      let j = increasingNewIndexSequence.length - 1;
       for (let i = toBePatched - 1; i >= 0; i--) {
         const oldIndex = newIndexToOldIndexMap[i];
         const newIndex = i + s2;
         const nextIndex = newIndex + 1;
         const reference = nextIndex < c2.length ? c2[nextIndex].el : null;
-        if (oldIndex === 0) { // new node
+        if (oldIndex === 0) { // new vNode in new vNode children
           patch(null, c2[newIndex], el, reference);
-        } else { // move
-          // previous add 1
-          renderOptions.insert(el, c2[newIndex].el, reference);
+        } else { // move (these vNode can reuse)
+          // 在原数组中也一定是大的在后，小的在前，所以倒着找可以进行相互对应
+          // 找不到移动相应节点
+          if (i !== increasingNewIndexSequence[j]) {
+            // previous add 1
+            renderOptions.insert(el, c2[newIndex].el, reference);
+          } else { // 找到位置不变，继续寻找前一个位置不变的节点
+            j--;
+          }
         }
       }
     }
