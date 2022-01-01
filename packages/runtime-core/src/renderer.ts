@@ -75,9 +75,6 @@ export const createRenderer = (renderOptions) => {
     let i = 0;
     let endIndex1 = c1.length - 1;
     let endIndex2 = c2.length - 1;
-    const mapMap = () => {
-
-    };
     // 1. sync from start
     while (i <= endIndex1 && i <= endIndex2) {
       const n1 = c1[i], n2 = c2[i];
@@ -104,7 +101,7 @@ export const createRenderer = (renderOptions) => {
         const nextPos = endIndex2 + 1;
         const reference = nextPos < c2.length ? c2[nextPos].el : null;
         while (i <= endIndex2) {
-          // move element
+          // insert new vNode
           patch(null, c2[i++], el, reference);
         }
       }
@@ -136,7 +133,7 @@ export const createRenderer = (renderOptions) => {
         }
       }
       // move node and insert new node
-      // find not patched vnode then inert it to parent
+      // find not patched vNode then inert it to parent
       for (let i = toBePatched - 1; i >= 0; i--) {
         const oldIndex = newIndexToOldIndexMap[i];
         const newIndex = i + s2;
@@ -150,6 +147,7 @@ export const createRenderer = (renderOptions) => {
         }
       }
     }
+
   };
   const patchChildren = (el, n1, n2) => {
     const c1 = n1.children;
