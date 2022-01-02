@@ -42,4 +42,9 @@ import { isString, NOOP, extend, generateCodeFrame } from '@vue/shared';
 
 * [webpack resolve alias](https://webpack.js.org/configuration/resolve/#resolvealias)
 
+### jsx vs template
+
+* jsx 更加灵活
+* template 可以更好的利用`Vue`模板编译时做的优化，性能更好
+
 ### How to create a high quality project

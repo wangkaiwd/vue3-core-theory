@@ -8,6 +8,7 @@ const createReactiveEffect = (fn) => {
   const reactiveEffect = () => {
     effects.push(reactiveEffect); // push stack before fn execute
     activeEffect = reactiveEffect;
+    // return value, it will be used for watch api
     const result = fn();
     effects.pop(); // pop stack after fn execute
     activeEffect = effects[effects.length - 1]; // update current active effect function
