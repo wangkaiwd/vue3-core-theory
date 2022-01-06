@@ -31,10 +31,10 @@ export const h = function (type, propsOrChildren, children) {
       if (isVNode(propsOrChildren)) {
         return createVNode(type, {}, [propsOrChildren]);
       } else {
-        return createVNode(type, propsOrChildren);
+        return createVNode(type, {}, propsOrChildren);
       }
     } else { // string
-      return createVNode(type, {}, [propsOrChildren]);
+      return createVNode(type, {}, propsOrChildren);
     }
   } else {
     if (l > 3) {

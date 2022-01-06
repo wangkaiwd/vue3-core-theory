@@ -14,7 +14,7 @@ const normalizeChildren = (vNode, children) => {
   // vNode.shapeFlag = vNode.shapeFlag | type;
   vNode.shapeFlag |= type;
 };
-export const createVNode = (type, props, children = null) => {
+export const createVNode = (type, props = {} as any, children = null) => {
   const { key } = props;
   const shapeFlag = isString(type) ? ShapeFlags.ELEMENT : isObject(type) ? ShapeFlags.STATEFUL_COMPONENT : 0;
   const vNode = {

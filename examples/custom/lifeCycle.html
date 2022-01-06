@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../../packages/runtime-dom/dist/runtime-dom.iife.js"></script>
+
+</head>
+<body>
+<div id="app"></div>
+<script>
+  const { createApp, reactive, h, onBeforeMount, onMounted, onBeforeUpdate, onUpdated } = RuntimeDOM;
+  const App = {
+    setup () {
+      const state = reactive({ count: 1 });
+      onBeforeMount(() => {
+        console.log('beforeMount');
+      });
+      onMounted(() => {
+        console.log('mounted');
+      });
+      onBeforeUpdate(() => {
+        console.log('beforeUpdate');
+      });
+      onUpdated(() => {
+        console.log('updated');
+      });
+      setTimeout(() => {
+        state.count++;
+      }, 1000);
+      return () => {
+        return h('h2', {}, state.count);
+      };
+    }
+  };
+
+  createApp(App).mount('#app');
+</script>
+</body>
+</html>

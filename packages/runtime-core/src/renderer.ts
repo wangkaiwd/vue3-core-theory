@@ -4,18 +4,33 @@ import { createComponentInstance, setupComponent } from './component';
 import { effect } from '@sppk/reactivity';
 import { isSameVNode } from './vNode';
 import { getSequence } from './getSequence';
+import { executeFns } from './apiLifeCycle';
 
 export const createRenderer = (renderOptions) => {
   function setupRenderEffect (instance, container) {
     effect(function componentEffect () {
       if (!instance.isMounted) { // render
+        const { bm, m } = instance;
+        if (bm) {
+          executeFns(bm);
+        }
         const subTree = instance.subTree = instance.render.call(instance.proxy, instance.proxy);
         patch(null, subTree, container);
         instance.isMounted = true;
+        if (m) { //
+          executeFns(m);
+        }
       } else { // update
+        const { bu, u } = instance;
+        if (bu) {
+          executeFns(bu);
+        }
         const prevTree = instance.subTree;
         const nextTree = instance.subTree = instance.render.call(instance.proxy, instance.proxy);
         patch(prevTree, nextTree, container);
+        if (u) {
+          executeFns(u);
+        }
       }
     });
   }

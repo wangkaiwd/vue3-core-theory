@@ -46,12 +46,24 @@ const handleSetupResult = (instance, result) => {
   }
   finishComponentSetup(instance);
 };
+let currentInstance = null;
+export const getCurrentInstance = () => {
+  return currentInstance;
+};
+
+// put all change in one place to find convenient
+export const setCurrentInstance = (value) => {
+  currentInstance = value;
+};
+
 const setupStatefulComponent = (instance) => {
   const { setup } = instance.type;
   const { props } = instance;
   if (setup) {
     const setupContext = createSetupContext(instance);
+    setCurrentInstance(instance);
     const result = setup(props, setupContext);
+    setCurrentInstance(null);
     handleSetupResult(instance, result);
   }
 };
