@@ -1,0 +1,19 @@
+{
+  "name": "@sppk/compiler-dom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "buildOptions": {
+    "name": "CompilerDOM",
+    "formats": [
+      "iife"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+  }
+}
