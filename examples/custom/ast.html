@@ -14,7 +14,11 @@
 <script>
   const { baseCompile } = CompilerDOM;
   // console.log('a', baseCompile(`{{ a }} `));
-  console.log('a', baseCompile(`<div>{{name}} <p>hello</p></div>`));
+  console.log('a', baseCompile(`
+    123
+    <a>123</a>
+    <div>hello</div>
+  `));
 </script>
 </body>
 </html>

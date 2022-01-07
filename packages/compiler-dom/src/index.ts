@@ -168,19 +168,21 @@ const advancePositionWithMutation = (context, endIndex, source = context.source,
   context.column += endIndex - lastLineStartIndex;
   context.offset += endIndex;
 };
-
+const ensureOneSpace = (str) => {
+  return str.replace(/\s+/g, ' ');
+};
 const parseTextData = (context, endIndex) => {
   const { source } = context;
   const content = source.slice(0, endIndex);
   // delete parsed template after assign content, continue parse rest template
   advanceBy(context, endIndex);
-  return content;
+  return ensureOneSpace(content);
 };
 const parseText = (context) => {
   let endIndex = calcTextEndIndex(context);
   const start = getCursor(context);
   const content = parseTextData(context, endIndex);
-  return {
+  return content.trim() && {
     loc: getSelection(context, start),
     content,
     type: NodeTypes.TEXT
@@ -188,7 +190,8 @@ const parseText = (context) => {
 };
 
 const isEnd = (context) => {
-  return !context.source;
+  // empty and end tag will stop parse work
+  return !context.source.trim() || context.source.startsWith('</');
 };
 
 function parseChildren (context) {
@@ -203,15 +206,25 @@ function parseChildren (context) {
     } else { // text
       node = parseText(context);
     }
-    nodes.push(node);
+    node && nodes.push(node);
   }
 
   return nodes;
 }
 
+const createRoot = (context, children) => {
+  const endIndex = context.source.length;
+  const start = { line: 1, column: 1, offset: 0 };
+  advanceBy(context, context.source.length);
+  return {
+    type: NodeTypes.ROOT,
+    loc: getSelection(context, start),
+    children
+  };
+};
 const baseParse = (template) => {
   const context = createParserContext(template);
-  return parseChildren(context);
+  return createRoot(context, parseChildren(context));
 };
 export const baseCompile = (template) => {
   const ast = baseParse(template);
