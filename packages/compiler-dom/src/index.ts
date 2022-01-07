@@ -32,8 +32,42 @@ export const enum NodeTypes {
   JS_RETURN_STATEMENT
 }
 
-const parseElement = () => {
-
+// ?: 0 or 1
+// (): group
+// [^a-b]: not (a or b)
+// \s: white space
+// \t: tab
+// \r: carriage return
+// \n: new line
+// * : 0 or more
+// + : 1 or more
+const tagReg = /^<\/?([a-z][^\s\t\r\n\/>]*)/;
+const spaceReg = /[\s\r\n\t]+>/;
+const parseTag = (context) => {
+  const start = getCursor(context);
+  const match = tagReg.exec(context.source);
+  const tag = match[1];
+  // delete < and tag name
+  advanceBy(context, match[0].length);
+  // delete whitespace
+  advanceSpace(context);
+  const isSelfClosing = context.source.startsWith('/>');
+  advanceBy(context, isSelfClosing ? 2 : 1);
+  return {
+    type: NodeTypes.ELEMENT,
+    tag,
+    isSelfClosing,
+    loc: getSelection(context, start)
+  };
+};
+const parseElement = (context) => {
+  const ele: any = parseTag(context);
+  ele.children = parseChildren(context);
+  if (context.source.startsWith('</')) { // close tag
+    parseTag(context);
+  }
+  ele.loc = getSelection(context, ele.loc.start);
+  return ele;
 };
 const parseInterpolation = (context) => {
   const start = getCursor(context);
@@ -56,13 +90,10 @@ const parseInterpolation = (context) => {
   return {
     loc: getSelection(context, start),
     content: {
+      content,
       type: NodeTypes.SIMPLE_EXPRESSION,
       isStatic: false,
-      loc: {
-        start: innerStart,
-        content,
-        end: innerEnd
-      }
+      loc: getSelection(context, innerStart, innerEnd)
     },
     type: NodeTypes.INTERPOLATION
   };
@@ -103,14 +134,21 @@ const getCursor = (context) => {
     offset
   };
 };
+const advanceSpace = (context) => {
+  // match [0]: full string of characters matched
+  const match = spaceReg.exec(context.source);
+  if (match) {
+    advanceBy(context, match[0].length);
+  }
+};
 const advanceBy = (context, endIndex) => {
   const { source } = context;
   // get end cursor position before delete parsed part
   advancePositionWithMutation(context, endIndex);
   context.source = source.slice(endIndex);
 };
-const getSelection = (context, start) => {
-  const end = getCursor(context);
+const getSelection = (context, start, end?) => {
+  end = end || getCursor(context);
   return {
     start,
     end,
@@ -159,14 +197,13 @@ function parseChildren (context) {
     const source = context.source;
     let node;
     if (source[0] === '<') { // tag
-
+      node = parseElement(context);
     } else if (source.startsWith('{{')) { // expression
       node = parseInterpolation(context);
     } else { // text
       node = parseText(context);
     }
     nodes.push(node);
-    break;
   }
 
   return nodes;
