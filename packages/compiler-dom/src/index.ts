@@ -1,8 +1,71 @@
-const parseTag = () => {
+export const enum NodeTypes {
+  ROOT,
+  ELEMENT,
+  TEXT,
+  COMMENT,
+  SIMPLE_EXPRESSION,
+  INTERPOLATION,
+  ATTRIBUTE,
+  DIRECTIVE,
+  // containers
+  COMPOUND_EXPRESSION,
+  IF,
+  IF_BRANCH,
+  FOR,
+  TEXT_CALL,
+  // codegen
+  VNODE_CALL,
+  JS_CALL_EXPRESSION,
+  JS_OBJECT_EXPRESSION,
+  JS_PROPERTY,
+  JS_ARRAY_EXPRESSION,
+  JS_FUNCTION_EXPRESSION,
+  JS_CONDITIONAL_EXPRESSION,
+  JS_CACHE_EXPRESSION,
+
+  // ssr codegen
+  JS_BLOCK_STATEMENT,
+  JS_TEMPLATE_LITERAL,
+  JS_IF_STATEMENT,
+  JS_ASSIGNMENT_EXPRESSION,
+  JS_SEQUENCE_EXPRESSION,
+  JS_RETURN_STATEMENT
+}
+
+const parseElement = () => {
 
 };
-const parseInterpolate = () => {
-
+const parseInterpolation = (context) => {
+  const start = getCursor(context);
+  const endIndex = calcExpEndIndex(context);
+  // delete {{
+  advanceBy(context, 2);
+  const innerStart = getCursor(context);
+  const innerEnd = getCursor(context);
+  const rawContentLength = endIndex - 4;
+  // delete content from template
+  // template: }}
+  const preTrimContent = parseTextData(context, rawContentLength);
+  const content = preTrimContent.trim();
+  const startOffset = preTrimContent.indexOf(content);
+  // accumulate line,column,offset by reference
+  advancePositionWithMutation(innerStart, startOffset, preTrimContent);
+  advancePositionWithMutation(innerEnd, content.length + startOffset, preTrimContent);
+  // delete end }}
+  advanceBy(context, 2);
+  return {
+    loc: getSelection(context, start),
+    content: {
+      type: NodeTypes.SIMPLE_EXPRESSION,
+      isStatic: false,
+      loc: {
+        start: innerStart,
+        content,
+        end: innerEnd
+      }
+    },
+    type: NodeTypes.INTERPOLATION
+  };
 };
 const createParserContext = (source) => {
   return {
@@ -13,7 +76,7 @@ const createParserContext = (source) => {
     originalSource: source
   };
 };
-const calculateEndIndex = (context) => {
+const calcTextEndIndex = (context) => {
   const { source } = context;
   const endToken = ['<', '{{'];
   const len = source.length;
@@ -27,6 +90,10 @@ const calculateEndIndex = (context) => {
     }
   }
   return endIndex;
+};
+const calcExpEndIndex = (context) => {
+  const { source } = context;
+  return source.indexOf('}}') + 2;
 };
 const getCursor = (context) => {
   const { line, column, offset } = context;
@@ -50,8 +117,7 @@ const getSelection = (context, start) => {
     source: context.originalSource.slice(start.offset, end.offset)
   };
 };
-const advancePositionWithMutation = (context, endIndex) => {
-  const { source } = context;
+const advancePositionWithMutation = (context, endIndex, source = context.source,) => {
   let line = 0;
   let lastLineStartIndex = 0;
   for (let i = 0; i < endIndex; i++) {
@@ -73,12 +139,13 @@ const parseTextData = (context, endIndex) => {
   return content;
 };
 const parseText = (context) => {
-  let endIndex = calculateEndIndex(context);
+  let endIndex = calcTextEndIndex(context);
   const start = getCursor(context);
   const content = parseTextData(context, endIndex);
   return {
     loc: getSelection(context, start),
-    content
+    content,
+    type: NodeTypes.TEXT
   };
 };
 
@@ -94,7 +161,7 @@ function parseChildren (context) {
     if (source[0] === '<') { // tag
 
     } else if (source.startsWith('{{')) { // expression
-
+      node = parseInterpolation(context);
     } else { // text
       node = parseText(context);
     }
