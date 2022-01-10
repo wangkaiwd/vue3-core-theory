@@ -227,6 +227,5 @@ const baseParse = (template) => {
   return createRoot(context, parseChildren(context));
 };
 export const baseCompile = (template) => {
-  const ast = baseParse(template);
-  return ast;
+  return baseParse(template);
 };

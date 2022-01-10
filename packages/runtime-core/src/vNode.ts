@@ -1,11 +1,10 @@
-import { isObject, isString, ShapeFlags } from '@sppk/shared';
+import { isEmpty, isObject, isString, ShapeFlags } from '@sppk/shared';
 
 const normalizeChildren = (vNode, children) => {
-  if (!children) {
+  if (isEmpty(children)) {
     return;
   }
   let type = 0;
-
   if (Array.isArray(children)) {
     type = ShapeFlags.ARRAY_CHILDREN;
   } else {

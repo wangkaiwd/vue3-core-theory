@@ -13,7 +13,23 @@
 <div id="app"></div>
 <script>
   // todo: async batch update
-  const { watch, reactive, watchEffect } = RuntimeDOM;
+  const { reactive, createApp, h } = RuntimeDOM;
+  const App = {
+    setup () {
+      const state = reactive({ count: 0, age: 18 });
+      setTimeout(() => {
+        state.age++;
+        state.count++;
+        state.count++;
+        state.count++;
+      });
+      return () => {
+        console.log('update');
+        return h('h2', { style: { color: 'red' } }, state.count);
+      };
+    }
+  };
+  createApp(App, {}).mount('#app');
 </script>
 </body>
 </html>

@@ -5,7 +5,6 @@ import { activeEffect, track, trigger } from './effect';
 
 const createGetter = (readonly = false, shallow = false) => {
   return (target, prop, receiver) => { // get -> make property map effects
-    console.log('get value', target, prop);
     const result = Reflect.get(target, prop, receiver);
     track('get', target, prop);
     if (shallow) {
@@ -24,7 +23,6 @@ const createGetter = (readonly = false, shallow = false) => {
 //  2. update array length(this should ignore)
 const createSetter = (readonly: boolean, shallow = false) => { // set -> get effects by property and execute all effects
   return (target, prop, val, receiver) => {
-    console.log('set value', target, prop, val);
     const key = parseInt(prop);
     const oldValue = target[prop];
     let hasKey = isArray(target) && key ? key < target.length : target.hasOwnProperty(prop);

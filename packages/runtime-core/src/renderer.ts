@@ -5,6 +5,7 @@ import { effect } from '@sppk/reactivity';
 import { isSameVNode } from './vNode';
 import { getSequence } from './getSequence';
 import { executeFns } from './apiLifeCycle';
+import { queueJob } from './scheduler';
 
 export const createRenderer = (renderOptions) => {
   function setupRenderEffect (instance, container) {
@@ -15,6 +16,7 @@ export const createRenderer = (renderOptions) => {
           executeFns(bm);
         }
         const subTree = instance.subTree = instance.render.call(instance.proxy, instance.proxy);
+        console.log('subTree', subTree);
         patch(null, subTree, container);
         instance.isMounted = true;
         if (m) { //
@@ -32,6 +34,8 @@ export const createRenderer = (renderOptions) => {
           executeFns(u);
         }
       }
+    }, {
+      scheduler: queueJob
     });
   }
 

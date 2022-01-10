@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "build": "ts-node -P tsconfig.node.json scripts/build.ts",
-    "dev": "ts-node -P tsconfig.node.json scripts/build.ts --dev --pkgs compiler-dom"
+    "dev": "ts-node -P tsconfig.node.json scripts/build.ts --dev --pkgs runtime-dom"
   },
   "repository": {
     "type": "git",
