@@ -13,15 +13,17 @@
 <div id="app"></div>
 <script>
   // todo: async batch update
-  const { reactive, createApp, h } = RuntimeDOM;
+  const { reactive, createApp, h, nextTick } = RuntimeDOM;
   const App = {
     setup () {
       const state = reactive({ count: 0, age: 18 });
-      setTimeout(() => {
-        state.age++;
-        state.count++;
-        state.count++;
-        state.count++;
+      state.age++;
+      state.count++;
+      state.count++;
+      state.count++;
+      console.log('dom', document.querySelector('#app').outerHTML);
+      nextTick(() => {
+        console.log(document.querySelector('#app').outerHTML);
       });
       return () => {
         console.log('update');
